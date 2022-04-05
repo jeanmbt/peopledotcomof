@@ -1,0 +1,17 @@
+export { AffectedRowsOutput } from "./AffectedRowsOutput";
+export { AggregatePerson } from "./AggregatePerson";
+export { AggregateSpecialty } from "./AggregateSpecialty";
+export { PersonAvgAggregate } from "./PersonAvgAggregate";
+export { PersonCount } from "./PersonCount";
+export { PersonCountAggregate } from "./PersonCountAggregate";
+export { PersonGroupBy } from "./PersonGroupBy";
+export { PersonMaxAggregate } from "./PersonMaxAggregate";
+export { PersonMinAggregate } from "./PersonMinAggregate";
+export { PersonSumAggregate } from "./PersonSumAggregate";
+export { SpecialtyAvgAggregate } from "./SpecialtyAvgAggregate";
+export { SpecialtyCount } from "./SpecialtyCount";
+export { SpecialtyCountAggregate } from "./SpecialtyCountAggregate";
+export { SpecialtyGroupBy } from "./SpecialtyGroupBy";
+export { SpecialtyMaxAggregate } from "./SpecialtyMaxAggregate";
+export { SpecialtyMinAggregate } from "./SpecialtyMinAggregate";
+export { SpecialtySumAggregate } from "./SpecialtySumAggregate";
