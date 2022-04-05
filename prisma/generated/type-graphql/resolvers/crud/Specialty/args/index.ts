@@ -1,0 +1,12 @@
+export { AggregateSpecialtyArgs } from "./AggregateSpecialtyArgs";
+export { CreateManySpecialtyArgs } from "./CreateManySpecialtyArgs";
+export { CreateSpecialtyArgs } from "./CreateSpecialtyArgs";
+export { DeleteManySpecialtyArgs } from "./DeleteManySpecialtyArgs";
+export { DeleteSpecialtyArgs } from "./DeleteSpecialtyArgs";
+export { FindFirstSpecialtyArgs } from "./FindFirstSpecialtyArgs";
+export { FindManySpecialtyArgs } from "./FindManySpecialtyArgs";
+export { FindUniqueSpecialtyArgs } from "./FindUniqueSpecialtyArgs";
+export { GroupBySpecialtyArgs } from "./GroupBySpecialtyArgs";
+export { UpdateManySpecialtyArgs } from "./UpdateManySpecialtyArgs";
+export { UpdateSpecialtyArgs } from "./UpdateSpecialtyArgs";
+export { UpsertSpecialtyArgs } from "./UpsertSpecialtyArgs";
