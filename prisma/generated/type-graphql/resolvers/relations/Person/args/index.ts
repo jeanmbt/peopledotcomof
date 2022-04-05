@@ -1,0 +1,1 @@
+export { PersonSpecialtiesArgs } from "./PersonSpecialtiesArgs";
