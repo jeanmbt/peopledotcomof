@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { ApolloServer } from 'apollo-server-micro'
-import * as typeDefs from '../../../graphql/generated/graphql-generated-types'
 import { resolvers } from '../../../prisma/generated/type-graphql'
 import * as tq from "type-graphql";
 import Cors from 'micro-cors'
