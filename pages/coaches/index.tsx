@@ -15,11 +15,17 @@ import { TableHeaderCell } from "../../styles/Table/Table.styles";
 import React from "react";
 import { TableCoachBySpecialty } from "../../components/CoachBySpecialty";
 import { TableAllCoaches } from "../../components/AllCoaches";
+import { useQuery } from "@apollo/client";
+import { GET_COACHES } from "../../graphql/getCoaches";
 
 const Coaches: NextPage = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [sortBy, setSortBy] = React.useState("");
+  let coaches = undefined;
+  const { loading, error, data } = useQuery(GET_COACHES);
+
+  console.log(data);
 
   const handleSpecialtyClick = (specialtyName: string) => {
     if (sortBy === "" || sortBy !== specialtyName) {
@@ -56,7 +62,7 @@ const Coaches: NextPage = () => {
         <Button sx={{ margin: "0.5em 0", float: "right" }} variant="outlined" href={`coaches/new`}>
           Add Coach
         </Button>
-        <TableContainer component={Paper}>
+        {/* <TableContainer component={Paper}>
           <Table aria-label="simple table" size="small">
             <TableHead>
               <TableRow>
@@ -93,7 +99,7 @@ const Coaches: NextPage = () => {
               />
             )}
           </Table>
-        </TableContainer>
+        </TableContainer> */}
       </Box>
     </Container>
   );
