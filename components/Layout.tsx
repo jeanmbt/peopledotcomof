@@ -33,10 +33,16 @@ export default function Layout({ children, theme }) {
     <>
       <Header theme={theme} />
       <main style={{ height: "max-content" }}>{children}</main>
-      <footer className={styles.footer}>
+      <footer
+        className={styles.footer}
+        style={{ backgroundColor: theme.palette.primary.main, color: "white" }}
+      >
         <a href="https://github.com/jeanmbt" target="_blank" rel="noopener noreferrer">
-          Developed by Jean Michel Battirola
+          by Jean Michel Battirola
         </a>
+        <Typography margin={1} fontSize={12}>
+          Using: NextJs + Typescript, Prisma, Apollo, MUI, Emotion, graphQL
+        </Typography>
       </footer>
     </>
   );
