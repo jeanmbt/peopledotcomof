@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 import { Box, Container, Button, TextField, Typography, Alert } from "@mui/material";
 import { useMutation } from "@apollo/client";
-import { ADD_COACH } from "../../graphql/addCoach";
+import { ADD_PERSON } from "../../graphql/addPerson";
 import React from "react";
 import { useRouter } from "next/router";
 
-const NewCoach: NextPage = () => {
+const NewPerson: NextPage = () => {
   const router = useRouter();
   const [error, setError] = React.useState(null);
   const [name, setName] = React.useState("");
@@ -18,7 +18,7 @@ const NewCoach: NextPage = () => {
   const [website, setWebsite] = React.useState("");
   const [confirmed, setConfirmed] = React.useState(false);
 
-  const [addCoach, { loading: mutationLoading }] = useMutation(ADD_COACH, {
+  const [addPerson, { loading: mutationLoading }] = useMutation(ADD_PERSON, {
     onError: (err) => {
       setError(err);
       console.log(error);
@@ -28,7 +28,7 @@ const NewCoach: NextPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await addCoach({
+      await addPerson({
         variables: {
           data: {
             name: name,
@@ -86,7 +86,7 @@ const NewCoach: NextPage = () => {
             }}
           >
             <Typography variant="h6" sx={{ margin: "1em 0", alignSelf: "center" }}>
-              Add a new coach:
+              Add a new person:
             </Typography>
 
             <TextField
@@ -178,7 +178,7 @@ const NewCoach: NextPage = () => {
               Submit
             </Button>
           </form>
-          {!error && confirmed && <Alert severity="success">Coach {name} added</Alert>}
+          {!error && confirmed && <Alert severity="success">Person {name} added</Alert>}
           {error && (
             <Alert sx={{ overflowWrap: "anywhere" }} severity="error">
               Error: {error.message}
@@ -190,4 +190,4 @@ const NewCoach: NextPage = () => {
   );
 };
 
-export default NewCoach;
+export default NewPerson;
