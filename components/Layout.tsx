@@ -34,7 +34,7 @@ export default function Layout({ children, theme }) {
       <Header theme={theme} />
       <main style={{ height: "max-content" }}>{children}</main>
       <footer className={styles.footer}>
-        <a href="https://linktr.ee/jeanmbt" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/jeanmbt" target="_blank" rel="noopener noreferrer">
           Developed by Jean Michel Battirola
         </a>
       </footer>
