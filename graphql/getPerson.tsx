@@ -1,8 +1,8 @@
 import { gql } from "apollo-server-micro";
 
-export const GET_COACH = gql`
-  query FindFirstCoach($where: CoachWhereInput) {
-    findFirstCoach(where: $where) {
+export const GET_PERSON = gql`
+  query FindFirstPerson($where: PersonWhereInput) {
+    findFirstPerson(where: $where) {
       id
       name
       email
@@ -15,10 +15,6 @@ export const GET_COACH = gql`
       specialties {
         id
         name
-      }
-      posts {
-        id
-        title
       }
     }
   }

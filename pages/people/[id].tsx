@@ -17,15 +17,16 @@ import {
   FormGroup,
   Alert,
 } from "@mui/material";
-import { GET_COACH } from "../../graphql/getCoach";
+
 import { Loading } from "../../components/Loading";
 import { NextPage } from "next";
 import React from "react";
 import { StyledCoachTableCell, TableHeaderCell } from "../../styles/Table/Table.styles";
-import { ICoach } from "../../types/coach";
+import { IPerson } from "../../types/person";
 import { Error } from "../../components/Error";
+import { GET_PERSON } from "../../graphql/getPerson";
 
-const Coach: NextPage = () => {
+const Person: NextPage = () => {
   const router = useRouter();
   const [mutationError, setMutationError] = React.useState(null);
   const [specialty, setSpecialty] = React.useState("");
@@ -33,7 +34,7 @@ const Coach: NextPage = () => {
   const id = parseInt(useRouter().query.id as string);
 
   let variables: object = null;
-  let coach: ICoach = null;
+  let person: IPerson = null;
 
   id ? (
     (variables = {
@@ -84,15 +85,15 @@ const Coach: NextPage = () => {
     setClicked(!clicked);
   };
 
-  const { data, loading, error } = useQuery(GET_COACH, { variables });
+  const { data, loading, error } = useQuery(GET_PERSON, { variables });
 
   if (loading) return <Loading />;
 
   if (data) {
-    coach = data.findFirstCoach;
+    person = data.findFirstPerson;
   }
 
-  if (coach)
+  if (person)
     return (
       <Container
         sx={{
@@ -123,7 +124,7 @@ const Coach: NextPage = () => {
                 <TableRow sx={{ fontSize: 50 }}>
                   <TableHeaderCell>Name:</TableHeaderCell>
                   <TableHeaderCell sx={{ fontSize: 15, fontWeight: "500 !important" }}>
-                    {coach.name}
+                    {person.name}
                   </TableHeaderCell>
                 </TableRow>
 
@@ -131,10 +132,10 @@ const Coach: NextPage = () => {
                   <TableCell sx={{ fontWeight: "bold" }}> Specialties:</TableCell>
                   <TableCell sx={{ padding: [2, 1, 1], width: 1 }}>
                     <Box>
-                      {coach.specialties &&
-                        coach.specialties.map((specialty) => (
+                      {person.specialties &&
+                        person.specialties.map((specialty) => (
                           <Button
-                            key={specialty.id + coach.id + Math.floor(Math.random() * 999999)}
+                            key={specialty.id + person.id + Math.floor(Math.random() * 999999)}
                             sx={{ margin: "0 0.5em", minWidth: "6em" }}
                           >
                             {specialty.name}
@@ -202,43 +203,27 @@ const Coach: NextPage = () => {
                 </TableRow>
                 <TableRow>
                   <StyledCoachTableCell sx={{ fontWeight: "bold" }}>Email:</StyledCoachTableCell>
-                  <StyledCoachTableCell>{coach.email}</StyledCoachTableCell>
+                  <StyledCoachTableCell>{person.email}</StyledCoachTableCell>
                 </TableRow>
                 <TableRow>
                   <StyledCoachTableCell sx={{ fontWeight: "bold" }}>Phone:</StyledCoachTableCell>
-                  <StyledCoachTableCell>{coach.phone}</StyledCoachTableCell>
+                  <StyledCoachTableCell>{person.phone}</StyledCoachTableCell>
                 </TableRow>
 
-                {coach.website && (
+                {person.website && (
                   <TableRow>
                     <StyledCoachTableCell sx={{ fontWeight: "bold" }}>
                       Website:
                     </StyledCoachTableCell>
-                    <StyledCoachTableCell>{coach.website}</StyledCoachTableCell>
+                    <StyledCoachTableCell>{person.website}</StyledCoachTableCell>
                   </TableRow>
                 )}
                 <TableRow>
                   <StyledCoachTableCell sx={{ fontWeight: "bold" }}>Adress:</StyledCoachTableCell>
                   <StyledCoachTableCell>
-                    {coach.street} {coach.streetNumber}, {coach.zip}   {coach.city}
+                    {person.street} {person.streetNumber}, {person.zip}   {person.city}
                   </StyledCoachTableCell>
                 </TableRow>
-
-                {(coach.posts.length as number) !== 0 && (
-                  <TableRow>
-                    <StyledCoachTableCell sx={{ fontWeight: "bold" }}>Posts:</StyledCoachTableCell>
-                    <StyledCoachTableCell>
-                      {coach.posts.map((post) => (
-                        <Button
-                          sx={{ margin: "0", minWidth: "6em" }}
-                          key={`${post.title}${coach.name}`}
-                        >
-                          {post.title}
-                        </Button>
-                      ))}
-                    </StyledCoachTableCell>
-                  </TableRow>
-                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -250,9 +235,9 @@ const Coach: NextPage = () => {
         </Box>
       </Container>
     );
-  if (error || !coach) {
+  if (error || !person) {
     return <Error error={error} />;
   }
 };
 
-export default Coach;
+export default Person;
