@@ -99,6 +99,7 @@ const Person: NextPage = () => {
         sx={{
           display: "flex",
           justifyContent: "center",
+          minHeight: "80vh",
         }}
       >
         <Box

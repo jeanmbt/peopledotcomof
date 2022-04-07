@@ -10,7 +10,7 @@ export const Loading = () => {
         height: "80vh",
         width: "100%",
         right: "0",
-        top: "3em",
+        top: "4em",
         backgroundColor: "rgba(255, 255, 255, 1)",
       }}
     >

@@ -50,17 +50,17 @@ export const TableAllPeople = (props: TablePerson) => {
         {(rowsPerPage > 0
           ? people.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           : people
-        ).map((coach) => (
-          <TableRow key={coach.id + "row"} sx={{ height: "3em" }}>
+        ).map((person) => (
+          <TableRow key={person.id + "row"} sx={{ height: "3em" }}>
             <StyledIndexTableCell component="th" scope="row" sx={{ paddingX: [1, 1, 2] }}>
-              <Link href={`people/${coach.id}`} passHref>
-                {coach.name}
+              <Link href={`people/${person.id}`} passHref>
+                {person.name}
               </Link>
             </StyledIndexTableCell>
             <StyledIndexTableCell>
-              {coach.specialties.map((specialty) => (
+              {person.specialties.map((specialty) => (
                 <Tooltip
-                  key={specialty.id + coach.id + "tooltip"}
+                  key={specialty.id + person.id + "tooltip"}
                   title={`Show all people that specialize in ${specialty.name}`}
                 >
                   <Button
@@ -68,7 +68,7 @@ export const TableAllPeople = (props: TablePerson) => {
                       handleSpecialtyClick(specialty.name);
                     }}
                     sx={{ margin: "0 0.5em" }}
-                    key={specialty.id + coach.id + +Math.floor(Math.random() * 999999)}
+                    key={specialty.id + person.id + +Math.floor(Math.random() * 999999)}
                   >
                     {specialty.name}
                   </Button>
@@ -76,7 +76,7 @@ export const TableAllPeople = (props: TablePerson) => {
               ))}
             </StyledIndexTableCell>
             <StyledIndexTableCell>
-              <Button size="small" variant="contained" href={`people/${coach.id}`}>
+              <Button size="small" variant="contained" href={`people/${person.id}`}>
                 more
               </Button>
             </StyledIndexTableCell>
