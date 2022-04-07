@@ -1,35 +1,43 @@
-import * as React from 'react';
-import type { AppProps } from 'next/app';
-import { CacheProvider, EmotionCache } from '@emotion/react';
-import { ThemeProvider, CssBaseline, createTheme } from '@mui/material';
+import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import { StyledEngineProvider, ThemeProvider } from "@mui/material";
 
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import { ApolloClient, InMemoryCache, ApolloProvider, gql } from "@apollo/client";
+import Layout from "../components/Layout";
 
-import createEmotionCache from '../utility/createEmotionCache';
-import lightThemeOptions from '../styles/theme/lightThemeOptions';
-import '../styles/globals.css';
+import theme from "../styles/theme/lightThemeOptions";
+import { CacheProvider, EmotionCache } from "@emotion/react";
+import createEmotionCache from "../utils/createEmotionCache";
+import Head from "next/head";
+
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
 const clientSideEmotionCache = createEmotionCache();
 
-const lightTheme = createTheme(lightThemeOptions);
-
-const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) {
+  const client = new ApolloClient({
+    uri: "http://localhost:3000/api",
+    cache: new InMemoryCache(),
+  });
 
   return (
-    <CacheProvider value={emotionCache}>
-      <ThemeProvider theme={lightTheme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </CacheProvider>
+    <StyledEngineProvider injectFirst>
+      <CacheProvider value={emotionCache}>
+        <ThemeProvider theme={theme}>
+          <ApolloProvider client={client}>
+            <Head>
+              <title>PeopleDotCom</title>
+            </Head>
+            <Layout theme={theme}>
+              <Component layout="fill" {...pageProps} />
+            </Layout>
+          </ApolloProvider>
+        </ThemeProvider>
+      </CacheProvider>
+    </StyledEngineProvider>
   );
-};
+}
 
 export default MyApp;

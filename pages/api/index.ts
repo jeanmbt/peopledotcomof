@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import { ApolloServer } from 'apollo-server-micro'
-import { resolvers } from '../../../prisma/generated/type-graphql'
+import { resolvers } from '../../prisma/generated/type-graphql'
 import * as tq from "type-graphql";
 import Cors from 'micro-cors'
-import { context } from "./context";
+import { context } from "./graphql/context";
 
 const cors = Cors()
 
@@ -23,7 +23,7 @@ export default cors(async function handler(req, res) {
   await startServer
 
   await apolloServer.createHandler({
-    path: '/api/graphql',
+    path: '/api',
   })(req, res)
 })
 
