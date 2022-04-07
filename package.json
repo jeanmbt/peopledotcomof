@@ -6,7 +6,9 @@
     "start": "next start",
     "lint": "next lint",
     "ts-node": "ts-node --compiler-options '{\\\"module\\\":\\\"commonjs\\\"}'",
-    "type": "module"
+    "type": "module",
+    "vercel-build": "prisma:generate && next build",
+    "prisma:generate": "PRISMA_CLIENT_ENGINE_TYPE=\"dataproxy\" prisma generate"
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",

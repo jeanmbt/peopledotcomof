@@ -18,7 +18,7 @@ const clientSideEmotionCache = createEmotionCache();
 
 function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) {
   const client = new ApolloClient({
-    uri: "http://localhost:3000/api",
+    uri: "/api",
     cache: new InMemoryCache(),
   });
 
