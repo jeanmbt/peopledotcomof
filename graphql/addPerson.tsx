@@ -1,8 +1,8 @@
 import { gql } from "apollo-server-micro";
 
-export const ADD_COACH = gql`
-  mutation createCoach($data: CoachCreateInput!) {
-    createCoach(data: $data) {
+export const ADD_PERSON = gql`
+  mutation createPerson($data: PersonCreateInput!) {
+    createPerson(data: $data) {
       email
       name
       phone
