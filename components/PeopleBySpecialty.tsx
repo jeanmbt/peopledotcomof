@@ -1,74 +1,81 @@
-import { useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import {
-  TableBody,
   Button,
+  TableBody,
   TableCell,
-  TableRow,
   TableFooter,
   TablePagination,
+  TableRow,
   Tooltip,
 } from "@mui/material";
-import Link from "next/link";
-import React, { Fragment } from "react";
-import { GET_COACHES } from "../graphql/getCoaches";
+import { Fragment } from "react";
 import { StyledIndexTableCell } from "../styles/Table/Table.styles";
-import { TableCoach } from "../types/tableCoach";
+import { TablePerson } from "../types/tablePerson";
 import { Error } from "./Error";
 import { Loading } from "./Loading";
 import { TablePaginationActions } from "./TablePaginationActions";
+import { GET_PEOPLE_BY_SPECIALTY } from "../graphql/getPeopleBySpecialty";
+import Link from "next/link";
 
-export const TableAllCoaches = (props: TableCoach) => {
-  let coaches = undefined;
-  const { loading, error, data } = useQuery(GET_COACHES);
-
+export const TablePeopleBySpecialty = (props: TablePerson) => {
   const {
     handleSpecialtyClick,
     rowsPerPage,
     page,
-
+    sortBy,
     handleChangePage,
     handleChangeRowsPerPage,
   } = props;
+  let people = undefined;
+  const variables = {
+    where: {
+      name: { equals: sortBy },
+    },
+  };
 
-  if (loading) {
-    return <Loading />;
-  }
+  const { loading, error, data } = useQuery(GET_PEOPLE_BY_SPECIALTY, { variables });
+
+  if (loading) return <Loading />;
 
   if (data) {
-    coaches = data.coaches;
+    people = data.specialties[0].persons;
   }
 
-  if (error || !data) {
+  if (error || !people) {
     return <Error error={error} />;
   }
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - coaches.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - people.length) : 0;
 
   return (
     <Fragment>
       <TableBody>
         {(rowsPerPage > 0
-          ? coaches.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          : coaches
-        ).map((coach) => (
-          <TableRow key={coach.id + "row"} sx={{ height: "3em" }}>
+          ? people.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          : people
+        ).map((person) => (
+          <TableRow key={person.id + "row"} sx={{ height: "3em" }}>
             <StyledIndexTableCell component="th" scope="row" sx={{ paddingX: [1, 1, 2] }}>
-              <Link href={`coaches/${coach.id}`} passHref>
-                {coach.name}
+              <Link href={`people/${person.id}`} passHref>
+                {person.name}
               </Link>
             </StyledIndexTableCell>
             <StyledIndexTableCell>
-              {coach.specialties.map((specialty) => (
+              {person.specialties.map((specialty) => (
                 <Tooltip
-                  key={specialty.id + coach.id + "tooltip"}
-                  title={`Show all coaches that specialize in ${specialty.name}`}
+                  key={specialty.id + person.id + "tooltip"}
+                  title={
+                    specialty.name === sortBy
+                      ? `Click again to remove ${specialty.name} filter`
+                      : `Click to show People specialized in ${specialty.name}`
+                  }
                 >
                   <Button
                     onClick={(e) => {
                       handleSpecialtyClick(specialty.name);
                     }}
                     sx={{ margin: "0 0.5em" }}
-                    key={specialty.id + coach.id + +Math.floor(Math.random() * 999999)}
+                    key={specialty.id + person.id + +Math.floor(Math.random() * 999999)}
                   >
                     {specialty.name}
                   </Button>
@@ -76,7 +83,7 @@ export const TableAllCoaches = (props: TableCoach) => {
               ))}
             </StyledIndexTableCell>
             <StyledIndexTableCell>
-              <Button size="small" variant="contained" href={`coaches/${coach.id}`}>
+              <Button size="small" variant="contained" href={`people/${person.id}`}>
                 more
               </Button>
             </StyledIndexTableCell>
@@ -89,7 +96,7 @@ export const TableAllCoaches = (props: TableCoach) => {
           <TablePagination
             rowsPerPageOptions={[15, 50, 100, { label: "All", value: -1 }]}
             colSpan={3}
-            count={coaches.length}
+            count={people.length}
             rowsPerPage={rowsPerPage}
             page={page}
             SelectProps={{

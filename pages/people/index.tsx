@@ -13,19 +13,14 @@ import {
 } from "@mui/material";
 import { TableHeaderCell } from "../../styles/Table/Table.styles";
 import React from "react";
-import { TableCoachBySpecialty } from "../../components/CoachBySpecialty";
-import { TableAllCoaches } from "../../components/AllCoaches";
+import { TablePeopleBySpecialty } from "../../components/PeopleBySpecialty";
+import { TableAllPeople } from "../../components/AllPeople";
 import { useQuery } from "@apollo/client";
-import { GET_COACHES } from "../../graphql/getCoaches";
 
-const Coaches: NextPage = () => {
+const People: NextPage = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [sortBy, setSortBy] = React.useState("");
-  let coaches = undefined;
-  const { loading, error, data } = useQuery(GET_COACHES);
-
-  console.log(data);
 
   const handleSpecialtyClick = (specialtyName: string) => {
     if (sortBy === "" || sortBy !== specialtyName) {
@@ -59,10 +54,10 @@ const Coaches: NextPage = () => {
           width: [1, 700, 900],
         }}
       >
-        <Button sx={{ margin: "0.5em 0", float: "right" }} variant="outlined" href={`coaches/new`}>
+        <Button sx={{ margin: "0.5em 0", float: "right" }} variant="outlined" href={`people/new`}>
           Add Coach
         </Button>
-        {/* <TableContainer component={Paper}>
+        <TableContainer component={Paper}>
           <Table aria-label="simple table" size="small">
             <TableHead>
               <TableRow>
@@ -78,7 +73,7 @@ const Coaches: NextPage = () => {
               </TableRow>
             </TableHead>
             {sortBy ? (
-              <TableCoachBySpecialty
+              <TablePeopleBySpecialty
                 sortBy={sortBy}
                 setSortBy={setSortBy}
                 rowsPerPage={rowsPerPage}
@@ -88,7 +83,7 @@ const Coaches: NextPage = () => {
                 handleChangePage={handleChangePage}
               />
             ) : (
-              <TableAllCoaches
+              <TableAllPeople
                 sortBy={sortBy}
                 setSortBy={setSortBy}
                 rowsPerPage={rowsPerPage}
@@ -99,10 +94,10 @@ const Coaches: NextPage = () => {
               />
             )}
           </Table>
-        </TableContainer> */}
+        </TableContainer>
       </Box>
     </Container>
   );
 };
 
-export default Coaches;
+export default People;
