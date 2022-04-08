@@ -21,14 +21,8 @@ export const TableAllPeople = (props: TablePerson) => {
   let people = undefined;
   const { loading, error, data } = useQuery(GET_PEOPLE);
 
-  const {
-    handleSpecialtyClick,
-    rowsPerPage,
-    page,
-
-    handleChangePage,
-    handleChangeRowsPerPage,
-  } = props;
+  const { handleSpecialtyClick, rowsPerPage, page, handleChangePage, handleChangeRowsPerPage } =
+    props;
 
   if (loading) {
     return <Loading />;
