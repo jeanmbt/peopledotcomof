@@ -15,9 +15,11 @@ import { TableHeaderCell } from "../../styles/Table/Table.styles";
 import React from "react";
 import { TablePeopleBySpecialty } from "../../components/PeopleBySpecialty";
 import { TableAllPeople } from "../../components/AllPeople";
-import { useQuery } from "@apollo/client";
+import { useQuery, gql } from "@apollo/client";
+import apolloClient from "../../lib/apollo";
+import { GET_PEOPLE } from "../../graphql/getPeople";
 
-const People: NextPage = () => {
+const People: NextPage = ({ data }: any) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [sortBy, setSortBy] = React.useState("");
@@ -29,6 +31,8 @@ const People: NextPage = () => {
       setSortBy("");
     }
   };
+
+  console.log(data);
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -101,3 +105,14 @@ const People: NextPage = () => {
 };
 
 export default People;
+
+export async function getServerSideProps() {
+  const data = await apolloClient.query({
+    query: GET_PEOPLE,
+    variables: { offset: 0, limit: 10 },
+    notifyOnNetworkStatusChange: true,
+  });
+  return {
+    props: { data }, // will be passed to the page component as props
+  };
+}
