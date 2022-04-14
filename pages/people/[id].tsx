@@ -34,6 +34,7 @@ const Person: NextPage = () => {
   const id = parseInt(useRouter().query.id as string);
 
   let variables: object = null;
+  //TODO: use generated Type
   let person: IPerson = null;
 
   id ? (

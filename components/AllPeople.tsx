@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import {
   TableBody,
   Button,
@@ -17,30 +17,60 @@ import { Error } from "./Error";
 import { Loading } from "./Loading";
 import { TablePaginationActions } from "./TablePaginationActions";
 
+// const PEOPLE_QUERY = gql`
+//   query People($offset: Int, $limit: Int) {
+//     people(offset: $offset, limit: $limit) {
+//       id
+//       name
+//       specialties {
+//         id
+//         name
+//       }
+//     }
+//   }
+// `;
+
 export const TableAllPeople = (props: TablePerson) => {
-  let people = undefined;
-  const { loading, error, data } = useQuery(GET_PEOPLE);
+  let people;
+  // const { loading, error, data } = useQuery(GET_PEOPLE, { variables: { take: 10 } });
 
   const {
     handleSpecialtyClick,
     rowsPerPage,
     page,
-
     handleChangePage,
     handleChangeRowsPerPage,
+    data,
+    error,
+    loading,
   } = props;
 
-  if (loading) {
-    return <Loading />;
-  }
+  console.log(data);
+
+  // if (data.loading) {
+  //   return <Loading />;
+  // }
 
   if (data) {
-    people = data.people;
+    people = data.data.people;
   }
+
+  // if (data) {
+  //   people = data.people;
+  // }
+
+  // if (data) {
+  //   people = data;
+  // }
 
   if (error || !data) {
     return <Error error={error} />;
   }
+
+  // if (!data) {
+  //   // const error = { message: "hmm" };
+  //   return <Error error={error} />;
+  // }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - people.length) : 0;
 

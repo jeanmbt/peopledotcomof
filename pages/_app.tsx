@@ -9,7 +9,7 @@ import theme from "../styles/theme/lightThemeOptions";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import createEmotionCache from "../utils/createEmotionCache";
 import Head from "next/head";
-import apolloClient from "../lib/apollo";
+import { useApollo } from "../lib/apollo";
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
@@ -18,6 +18,8 @@ interface MyAppProps extends AppProps {
 const clientSideEmotionCache = createEmotionCache();
 
 function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) {
+  const apolloClient = useApollo(pageProps);
+
   return (
     <StyledEngineProvider injectFirst>
       <CacheProvider value={emotionCache}>
