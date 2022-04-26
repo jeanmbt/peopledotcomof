@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useLazyQuery, NetworkStatus } from "@apollo/client";
 import {
   TableBody,
   Button,
@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import Link from "next/link";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { GET_PEOPLE } from "../graphql/getPeople";
 import { StyledIndexTableCell } from "../styles/Table/Table.styles";
 import { TablePerson } from "../types/tablePerson";
@@ -32,32 +32,83 @@ import { TablePaginationActions } from "./TablePaginationActions";
 
 export const TableAllPeople = (props: TablePerson) => {
   let people;
-  // const { loading, error, data } = useQuery(GET_PEOPLE, { variables: { take: 10 } });
 
   const {
     handleSpecialtyClick,
     rowsPerPage,
     page,
-    handleChangePage,
+    // handleChangePage,
     handleChangeRowsPerPage,
-    data,
-    error,
-    loading,
+    // data,
+    // error,
+    // loading,
+    setPage,
+    count,
   } = props;
 
-  console.log(data);
+  const [cursor, setCursor] = React.useState(0);
 
-  // if (data.loading) {
-  //   return <Loading />;
-  // }
+  const [getPeople, { loading, error, data, fetchMore }] = useLazyQuery(GET_PEOPLE, {
+    variables: { skip: cursor, take: rowsPerPage },
+    notifyOnNetworkStatusChange: true,
+  });
 
-  if (data) {
-    people = data.data.people;
+  useEffect(() => {
+    if (!data) {
+      getPeople();
+    }
+  });
+
+  // const a = fetchMore({
+  //   query: { GET_PEOPLE },
+  //   variables: { skip: cursor, take: rowsPerPage },
+  // });
+
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setCursor(data.people.slice(-1)[0].id);
+    setPage(newPage);
+    console.log(`cursor: ${cursor}`);
+    // console.log(`cursor ${cursor}`);
+    fetchMore({
+      query: gql`
+        query People($take: Int, $skip: Int) {
+          people(take: $take, skip: $skip) {
+            id
+            name
+            specialties {
+              id
+              name
+            }
+          }
+        }
+      `,
+      variables: { skip: cursor, take: rowsPerPage },
+    });
+
+    // console.log(`first person id: ${data.people[0].id}`);
+    // console.log(`page: ${page}`);
+    console.log("hi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  };
+
+  // console.log("cursor =>" + " " + cursor);
+
+  // console.log(data.people.length);
+
+  if (data?.loading || loading) {
+    return <Loading />;
   }
 
   // if (data) {
-  //   people = data.people;
+  //   people = data.data.people;
   // }
+
+  if (data) {
+    people = data.people;
+    console.log(`first person id: ${data.people[0].id}`);
+    console.log(`page: ${page}`);
+
+    console.log(`cursor: ${cursor}`);
+  }
 
   // if (data) {
   //   people = data;
@@ -72,7 +123,7 @@ export const TableAllPeople = (props: TablePerson) => {
   //   return <Error error={error} />;
   // }
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - people.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - count) : 0;
 
   return (
     <Fragment>
@@ -116,10 +167,12 @@ export const TableAllPeople = (props: TablePerson) => {
       </TableBody>
       <TableFooter>
         <TableRow>
-          <TablePagination
+          {/* <TablePagination
+            // nextItemButtonProps={{ fetchMore({variables: {skip: cursor, take: rowsPerPage}}), cursor }}
+            labelRowsPerPage={"People per page"}
             rowsPerPageOptions={[15, 50, 100, { label: "All", value: -1 }]}
             colSpan={3}
-            count={people.length}
+            count={count}
             rowsPerPage={rowsPerPage}
             page={page}
             SelectProps={{
@@ -131,7 +184,7 @@ export const TableAllPeople = (props: TablePerson) => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
             ActionsComponent={TablePaginationActions}
-          />
+          /> */}
         </TableRow>
       </TableFooter>
     </Fragment>

@@ -95,6 +95,7 @@ export const TablePeopleBySpecialty = (props: TablePerson) => {
         <TableRow>
           <TablePagination
             rowsPerPageOptions={[15, 50, 100, { label: "All", value: -1 }]}
+            labelRowsPerPage={"People per page"}
             colSpan={3}
             count={people.length}
             rowsPerPage={rowsPerPage}

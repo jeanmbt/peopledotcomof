@@ -15,14 +15,14 @@ import { TableHeaderCell } from "../../styles/Table/Table.styles";
 import React from "react";
 import { TablePeopleBySpecialty } from "../../components/PeopleBySpecialty";
 import { TableAllPeople } from "../../components/AllPeople";
-import { useQuery, gql } from "@apollo/client";
+import { gql } from "@apollo/client";
 // import apolloClient from "../../lib/apollo";
 import { initializeApollo, addApolloState } from "../../lib/apollo";
-import { GET_PEOPLE } from "../../graphql/getPeople";
-import { Loading } from "../../components/Loading";
+// import { GET_PEOPLE } from "../../graphql/getPeople";
+// import { Loading } from "../../components/Loading";
 
-const People: NextPage = ({ data }: any) => {
-  // const People: NextPage = () => {
+// const People: NextPage = ({ data }: any) => {
+const People: NextPage = ({ count }: any) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [sortBy, setSortBy] = React.useState("");
@@ -35,20 +35,11 @@ const People: NextPage = ({ data }: any) => {
     }
   };
 
-  // console.log("index" + data);
-  // if (data.loading) {
-  //   return <Loading />;
-  // }
-
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
   };
 
   return (
@@ -88,20 +79,21 @@ const People: NextPage = ({ data }: any) => {
                 setSortBy={setSortBy}
                 rowsPerPage={rowsPerPage}
                 page={page}
+                setPage={setPage}
                 handleSpecialtyClick={handleSpecialtyClick}
                 handleChangeRowsPerPage={handleChangeRowsPerPage}
-                handleChangePage={handleChangePage}
               />
             ) : (
               <TableAllPeople
-                data={data}
+                // data={data}
+                count={count}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
                 rowsPerPage={rowsPerPage}
                 page={page}
+                setPage={setPage}
                 handleSpecialtyClick={handleSpecialtyClick}
                 handleChangeRowsPerPage={handleChangeRowsPerPage}
-                handleChangePage={handleChangePage}
               />
             )}
           </Table>
@@ -116,29 +108,39 @@ export default People;
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 export const getStaticProps = async (context) => {
   const apolloClient = initializeApollo();
-  const GET_PEOPLE = gql`
-    query People($take: Int, $skip: Int) {
-      people(take: $take, skip: $skip) {
-        id
-        name
-        specialties {
-          id
-          name
+
+  const PEOPLE_COUNT = gql`
+    query _count {
+      aggregatePerson {
+        _count {
+          _all
         }
       }
     }
   `;
 
+  // const GET_PEOPLE = gql`
+  //   query People {
+  //     people {
+  //       id
+  //       name
+  //       specialties {
+  //         id
+  //         name
+  //       }
+  //     }
+  //   }
+  // `;
+
   const data = await apolloClient.query({
-    query: GET_PEOPLE,
-    variables: { take: 15, offset: 0 },
+    query: PEOPLE_COUNT,
     notifyOnNetworkStatusChange: true,
   });
-
+  const count = data.data.aggregatePerson._count._all;
   // return {
   //   props: { data }, // will be passed to the page component as props
   // };
   return addApolloState(apolloClient, {
-    props: { data },
+    props: { count },
   });
 };

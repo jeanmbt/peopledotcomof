@@ -1,6 +1,7 @@
 import { Box, IconButton, TableFooter, TableRow, TablePagination } from "@mui/material";
 
 interface TablePaginationActionsProps {
+  cursor?: any;
   count: number;
   page: number;
   rowsPerPage: number;
