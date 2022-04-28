@@ -1,4 +1,4 @@
-import { gql, useQuery, useLazyQuery, NetworkStatus } from "@apollo/client";
+import { gql, useQuery, useLazyQuery, NetworkStatus, ApolloQueryResult } from "@apollo/client";
 import {
   TableBody,
   Button,
@@ -7,15 +7,17 @@ import {
   TableFooter,
   TablePagination,
   Tooltip,
+  Container,
 } from "@mui/material";
 import Link from "next/link";
-import React, { Fragment, useEffect } from "react";
+import React, { EffectCallback, Fragment, useEffect } from "react";
 import { GET_PEOPLE } from "../graphql/getPeople";
 import { StyledIndexTableCell } from "../styles/Table/Table.styles";
 import { TablePerson } from "../types/tablePerson";
 import { Error } from "./Error";
 import { Loading } from "./Loading";
 import { TablePaginationActions } from "./TablePaginationActions";
+import { InView } from "react-intersection-observer";
 
 // const PEOPLE_QUERY = gql`
 //   query People($offset: Int, $limit: Int) {
@@ -31,66 +33,49 @@ import { TablePaginationActions } from "./TablePaginationActions";
 // `;
 
 export const TableAllPeople = (props: TablePerson) => {
-  let people;
+  let people: any[] | Promise<ApolloQueryResult<any>>;
 
   const {
     handleSpecialtyClick,
     rowsPerPage,
     page,
-    // handleChangePage,
-    handleChangeRowsPerPage,
+
+    // handleChangeRowsPerPage,
     // data,
     // error,
     // loading,
-    setPage,
+    // setPage,
     count,
   } = props;
 
   const [cursor, setCursor] = React.useState(0);
 
-  const [getPeople, { loading, error, data, fetchMore }] = useLazyQuery(GET_PEOPLE, {
-    variables: { skip: cursor, take: rowsPerPage },
-    notifyOnNetworkStatusChange: true,
-  });
-
-  useEffect(() => {
-    if (!data) {
-      getPeople();
+  const [getPeople, { loading, refetch, error, data, fetchMore, networkStatus }] = useLazyQuery(
+    GET_PEOPLE,
+    {
+      variables: { skip: cursor, take: rowsPerPage },
+      // notifyOnNetworkStatusChange: true,
     }
-  });
+  );
+
+  useEffect((): any => {
+    if (!data) {
+      console.log("getting people...");
+      // first fetch
+      getPeople();
+      console.log("/////////////////////////    fetched first data! 👉");
+      // setCursor(data?.people.slice(-1)[0].id);
+    }
+
+    // if (data && fetchMore) {
+    //   fetchMore({});
+    // }
+  }, [cursor, data, getPeople]);
 
   // const a = fetchMore({
   //   query: { GET_PEOPLE },
   //   variables: { skip: cursor, take: rowsPerPage },
   // });
-
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setCursor(data.people.slice(-1)[0].id);
-    setPage(newPage);
-    console.log(`cursor: ${cursor}`);
-    // console.log(`cursor ${cursor}`);
-    fetchMore({
-      query: gql`
-        query People($take: Int, $skip: Int) {
-          people(take: $take, skip: $skip) {
-            id
-            name
-            specialties {
-              id
-              name
-            }
-          }
-        }
-      `,
-      variables: { skip: cursor, take: rowsPerPage },
-    });
-
-    // console.log(`first person id: ${data.people[0].id}`);
-    // console.log(`page: ${page}`);
-    console.log("hi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-  };
-
-  // console.log("cursor =>" + " " + cursor);
 
   // console.log(data.people.length);
 
@@ -98,15 +83,19 @@ export const TableAllPeople = (props: TablePerson) => {
     return <Loading />;
   }
 
+  if (networkStatus === NetworkStatus.refetch) return "Refetching!";
   // if (data) {
   //   people = data.data.people;
   // }
 
   if (data) {
     people = data.people;
-    console.log(`first person id: ${data.people[0].id}`);
-    console.log(`page: ${page}`);
 
+    console.log("data ->");
+    console.log(data);
+    console.log(data.people);
+    console.log(` 👨‍🦲 first person id: ${data.people[0].id},  first person of the list:`);
+    console.log(data.people[0]);
     console.log(`cursor: ${cursor}`);
   }
 
@@ -128,45 +117,64 @@ export const TableAllPeople = (props: TablePerson) => {
   return (
     <Fragment>
       <TableBody>
-        {(rowsPerPage > 0
-          ? people.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          : people
-        ).map((person) => (
-          <TableRow key={person.id + "row"} sx={{ height: "3em" }}>
-            <StyledIndexTableCell component="th" scope="row" sx={{ paddingX: [1, 1, 2] }}>
-              <Link href={`people/${person.id}`} passHref>
-                {person.name}
-              </Link>
-            </StyledIndexTableCell>
-            <StyledIndexTableCell>
-              {person.specialties.map((specialty) => (
-                <Tooltip
-                  key={specialty.id + person.id + "tooltip"}
-                  title={`Show all people that specialize in ${specialty.name}`}
-                >
-                  <Button
-                    onClick={(e) => {
-                      handleSpecialtyClick(specialty.name);
-                    }}
-                    sx={{ margin: "0 0.5em" }}
-                    key={specialty.id + person.id + +Math.floor(Math.random() * 999999)}
+        {people.map(
+          (person: {
+            id: string;
+            name: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal;
+            specialties: any[];
+          }) => (
+            <TableRow key={person.id + "row"} sx={{ height: "3em" }}>
+              <StyledIndexTableCell component="th" scope="row" sx={{ paddingX: [1, 1, 2] }}>
+                <Link href={`people/${person.id}`} passHref>
+                  {person.name}
+                </Link>
+              </StyledIndexTableCell>
+              <StyledIndexTableCell>
+                {person.specialties.map((specialty: { id: any; name: {} }) => (
+                  <Tooltip
+                    key={specialty.id + person.id + "tooltip"}
+                    title={`Show all people that specialize in ${specialty.name}`}
                   >
-                    {specialty.name}
-                  </Button>
-                </Tooltip>
-              ))}
-            </StyledIndexTableCell>
-            <StyledIndexTableCell>
-              <Button size="small" variant="contained" href={`people/${person.id}`}>
-                more
-              </Button>
-            </StyledIndexTableCell>
-          </TableRow>
-        ))}
+                    <Button
+                      onClick={(e) => {
+                        handleSpecialtyClick(specialty.name);
+                      }}
+                      sx={{ margin: "0 0.5em" }}
+                      key={specialty.id + person.id + +Math.floor(Math.random() * 999999)}
+                    >
+                      {specialty.name}
+                    </Button>
+                  </Tooltip>
+                ))}
+              </StyledIndexTableCell>
+              <StyledIndexTableCell>
+                <Button size="small" variant="contained" href={`people/${person.id}`}>
+                  more
+                </Button>
+              </StyledIndexTableCell>
+            </TableRow>
+          )
+        )}
         {emptyRows > 0 && <TableRow style={{ height: "-10" }}></TableRow>}
       </TableBody>
       <TableFooter>
         <TableRow>
+          <InView
+            onChange={(inView) => {
+              if (inView) {
+                fetchMore({
+                  variables: {
+                    skip: cursor,
+                    take: 210,
+                  },
+                });
+                // console.log("Updating cursor to last id....");
+                // console.log(`last id ${data.people.slice(-1)[0].id}`);
+                setCursor(data.people.slice(-1)[0].id);
+              }
+            }}
+          />
+
           {/* <TablePagination
             // nextItemButtonProps={{ fetchMore({variables: {skip: cursor, take: rowsPerPage}}), cursor }}
             labelRowsPerPage={"People per page"}
@@ -187,6 +195,27 @@ export const TableAllPeople = (props: TablePerson) => {
           /> */}
         </TableRow>
       </TableFooter>
+      {/* <button
+        onClick={() => {
+          console.log(
+            "CLICKED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+          );
+
+          console.log(data.people.slice(-1)[0]);
+          // fetching more
+          fetchMore({
+            variables: {
+              skip: cursor,
+            },
+          });
+          console.log("Updating cursor to last id....");
+          console.log(`last id ${data.people.slice(-1)[0].id}`);
+          setCursor(data.people.slice(-1)[0].id);
+          console.log(`cursor: ${cursor}`);
+        }}
+      >
+        Load
+      </button> */}
     </Fragment>
   );
 };

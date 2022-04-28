@@ -12,9 +12,22 @@ function createApolloClient() {
   uri: 'http://localhost:3000/api',
   cache: new InMemoryCache({
     typePolicies: {
+      
       Query: {
+        // merge(existing: any = [], incoming :any = []) {
+        //   return [...existing, ...incoming];
+        // },
+        
         fields: {
-          allPeople: concatPagination(),
+          people: {
+             keyArgs: false,
+      
+            merge(existing = [], incoming ) {
+              return [...existing, ...incoming];
+            },
+          },
+           
+
         },
       },
     },
@@ -25,6 +38,7 @@ function createApolloClient() {
     uri: 'http://localhost:3000/api', // Server URL (must be absolute)
     credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
   }),
+  
 })
 
 } 
