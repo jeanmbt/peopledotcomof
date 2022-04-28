@@ -9,11 +9,7 @@ export interface TablePerson {
   error?: ApolloError;
   people?: ApolloQueryResult<PeopleQueryResult>;
   handleSpecialtyClick: (specialty: string) => void;
-  handleChangePage: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
-  handleChangeRowsPerPage: any;
   setSortBy: SetStateAction<Dispatch<string>>;
-  rowsPerPage: number;
-  page: number;
   sortBy?: string;
   data?: ApolloQueryResult<any>;
 }

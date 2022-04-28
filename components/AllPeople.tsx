@@ -33,27 +33,24 @@ import { InView } from "react-intersection-observer";
 // `;
 
 export const TableAllPeople = (props: TablePerson) => {
-  let people: any[] | Promise<ApolloQueryResult<any>>;
+  let people: any[] | Promise<ApolloQueryResult<any>> | any;
 
   const {
     handleSpecialtyClick,
-    rowsPerPage,
-    page,
-
     // handleChangeRowsPerPage,
     // data,
     // error,
     // loading,
     // setPage,
     count,
-  } = props;
+  }: any = props;
 
   const [cursor, setCursor] = React.useState(0);
 
   const [getPeople, { loading, refetch, error, data, fetchMore, networkStatus }] = useLazyQuery(
     GET_PEOPLE,
     {
-      variables: { skip: cursor, take: rowsPerPage },
+      variables: { skip: cursor, take: 5 },
       // notifyOnNetworkStatusChange: true,
     }
   );
@@ -83,7 +80,6 @@ export const TableAllPeople = (props: TablePerson) => {
     return <Loading />;
   }
 
-  if (networkStatus === NetworkStatus.refetch) return "Refetching!";
   // if (data) {
   //   people = data.data.people;
   // }
@@ -111,8 +107,6 @@ export const TableAllPeople = (props: TablePerson) => {
   //   // const error = { message: "hmm" };
   //   return <Error error={error} />;
   // }
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - count) : 0;
 
   return (
     <Fragment>
@@ -155,67 +149,28 @@ export const TableAllPeople = (props: TablePerson) => {
             </TableRow>
           )
         )}
-        {emptyRows > 0 && <TableRow style={{ height: "-10" }}></TableRow>}
-      </TableBody>
-      <TableFooter>
         <TableRow>
           <InView
             onChange={(inView) => {
-              if (inView) {
+              setCursor(data.people.slice(-1)[0].id);
+              if (inView && data.people.slice(-1)[0].id !== count) {
                 fetchMore({
                   variables: {
                     skip: cursor,
-                    take: 210,
+                    take: 5,
                   },
                 });
                 // console.log("Updating cursor to last id....");
                 // console.log(`last id ${data.people.slice(-1)[0].id}`);
-                setCursor(data.people.slice(-1)[0].id);
               }
             }}
-          />
-
-          {/* <TablePagination
-            // nextItemButtonProps={{ fetchMore({variables: {skip: cursor, take: rowsPerPage}}), cursor }}
-            labelRowsPerPage={"People per page"}
-            rowsPerPageOptions={[15, 50, 100, { label: "All", value: -1 }]}
-            colSpan={3}
-            count={count}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            SelectProps={{
-              inputProps: {
-                "aria-label": "per page",
-              },
-              native: true,
-            }}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            ActionsComponent={TablePaginationActions}
-          /> */}
+          >
+            <Container>
+              {data.people.slice(-1)[0].id !== count ? "loading more people..." : ""}
+            </Container>
+          </InView>
         </TableRow>
-      </TableFooter>
-      {/* <button
-        onClick={() => {
-          console.log(
-            "CLICKED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-          );
-
-          console.log(data.people.slice(-1)[0]);
-          // fetching more
-          fetchMore({
-            variables: {
-              skip: cursor,
-            },
-          });
-          console.log("Updating cursor to last id....");
-          console.log(`last id ${data.people.slice(-1)[0].id}`);
-          setCursor(data.people.slice(-1)[0].id);
-          console.log(`cursor: ${cursor}`);
-        }}
-      >
-        Load
-      </button> */}
+      </TableBody>
     </Fragment>
   );
 };

@@ -10,6 +10,8 @@ import {
   Button,
   Tooltip,
   Typography,
+  TableBody,
+  TableFooter,
 } from "@mui/material";
 import { TableHeaderCell } from "../../styles/Table/Table.styles";
 import React from "react";
@@ -27,7 +29,7 @@ const People: NextPage = ({ count }: any) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [sortBy, setSortBy] = React.useState("");
 
-  const handleSpecialtyClick = (specialtyName: string) => {
+  const handleSpecialtyClick = (specialtyName: string | any) => {
     if (sortBy === "" || sortBy !== specialtyName) {
       setSortBy(specialtyName);
     } else if (sortBy === specialtyName) {
@@ -77,11 +79,7 @@ const People: NextPage = ({ count }: any) => {
               <TablePeopleBySpecialty
                 sortBy={sortBy}
                 setSortBy={setSortBy}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                setPage={setPage}
                 handleSpecialtyClick={handleSpecialtyClick}
-                handleChangeRowsPerPage={handleChangeRowsPerPage}
               />
             ) : (
               <TableAllPeople
@@ -89,11 +87,7 @@ const People: NextPage = ({ count }: any) => {
                 count={count}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                setPage={setPage}
                 handleSpecialtyClick={handleSpecialtyClick}
-                handleChangeRowsPerPage={handleChangeRowsPerPage}
               />
             )}
           </Table>
