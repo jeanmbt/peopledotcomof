@@ -8,6 +8,7 @@ import {
   TablePagination,
   Tooltip,
   Container,
+  Box,
 } from "@mui/material";
 import Link from "next/link";
 import React, { EffectCallback, Fragment, useEffect } from "react";
@@ -18,95 +19,39 @@ import { Error } from "./Error";
 import { Loading } from "./Loading";
 import { TablePaginationActions } from "./TablePaginationActions";
 import { InView } from "react-intersection-observer";
-
-// const PEOPLE_QUERY = gql`
-//   query People($offset: Int, $limit: Int) {
-//     people(offset: $offset, limit: $limit) {
-//       id
-//       name
-//       specialties {
-//         id
-//         name
-//       }
-//     }
-//   }
-// `;
+import spinner from "../public/spinner.svg";
 
 export const TableAllPeople = (props: TablePerson) => {
   let people: any[] | Promise<ApolloQueryResult<any>> | any;
 
-  const {
-    handleSpecialtyClick,
-    // handleChangeRowsPerPage,
-    // data,
-    // error,
-    // loading,
-    // setPage,
-    count,
-  }: any = props;
+  const { handleSpecialtyClick, count }: any = props;
 
   const [cursor, setCursor] = React.useState(0);
 
   const [getPeople, { loading, refetch, error, data, fetchMore, networkStatus }] = useLazyQuery(
     GET_PEOPLE,
     {
-      variables: { skip: cursor, take: 5 },
-      // notifyOnNetworkStatusChange: true,
+      variables: { skip: cursor, take: 10 },
     }
   );
 
   useEffect((): any => {
     if (!data) {
-      console.log("getting people...");
-      // first fetch
       getPeople();
-      console.log("/////////////////////////    fetched first data! 👉");
-      // setCursor(data?.people.slice(-1)[0].id);
     }
-
-    // if (data && fetchMore) {
-    //   fetchMore({});
-    // }
-  }, [cursor, data, getPeople]);
-
-  // const a = fetchMore({
-  //   query: { GET_PEOPLE },
-  //   variables: { skip: cursor, take: rowsPerPage },
-  // });
-
-  // console.log(data.people.length);
+  });
 
   if (data?.loading || loading) {
     return <Loading />;
   }
 
-  // if (data) {
-  //   people = data.data.people;
-  // }
-
   if (data) {
     people = data.people;
-
-    console.log("data ->");
-    console.log(data);
-    console.log(data.people);
-    console.log(` 👨‍🦲 first person id: ${data.people[0].id},  first person of the list:`);
-    console.log(data.people[0]);
-    console.log(`cursor: ${cursor}`);
   }
-
-  // if (data) {
-  //   people = data;
-  // }
 
   if (error || !data) {
     return <Error error={error} />;
   }
-
-  // if (!data) {
-  //   // const error = { message: "hmm" };
-  //   return <Error error={error} />;
-  // }
 
   return (
     <Fragment>
@@ -150,25 +95,51 @@ export const TableAllPeople = (props: TablePerson) => {
           )
         )}
         <TableRow>
-          <InView
-            onChange={(inView) => {
-              setCursor(data.people.slice(-1)[0].id);
-              if (inView && data.people.slice(-1)[0].id !== count) {
-                fetchMore({
-                  variables: {
-                    skip: cursor,
-                    take: 5,
-                  },
-                });
-                // console.log("Updating cursor to last id....");
-                // console.log(`last id ${data.people.slice(-1)[0].id}`);
-              }
-            }}
-          >
-            <Container>
-              {data.people.slice(-1)[0].id !== count ? "loading more people..." : ""}
-            </Container>
-          </InView>
+          {/* // TODO: Make a component */}
+          <TableCell>
+            <InView
+              onChange={(inView) => {
+                setCursor(data.people.slice(-1)[0].id);
+                if (inView && data.people.slice(-1)[0].id !== count) {
+                  fetchMore({
+                    variables: {
+                      skip: cursor,
+                      take: 15,
+                    },
+                  });
+                }
+              }}
+            />
+          </TableCell>
+          <TableCell>
+            {data.people.slice(-1)[0].id !== count ? (
+              <Box
+                sx={{
+                  margin: "1em",
+                  height: "1em",
+                  width: "1em",
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  backgroundImage: `url(${spinner.src})`,
+                  backgroundPosition: "center",
+                }}
+              ></Box>
+            ) : (
+              <Box
+                sx={{
+                  margin: "1em",
+                  height: "1em",
+                  width: "1em",
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  backgroundImage: `url(${spinner.src})`,
+                  backgroundPosition: "center",
+                }}
+              >
+                That is as many we get!
+              </Box>
+            )}
+          </TableCell>
         </TableRow>
       </TableBody>
     </Fragment>

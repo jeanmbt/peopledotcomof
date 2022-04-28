@@ -20,14 +20,11 @@ function createApolloClient() {
         
         fields: {
           people: {
-             keyArgs: false,
-      
+            keyArgs: false,
             merge(existing = [], incoming ) {
               return [...existing, ...incoming];
             },
           },
-           
-
         },
       },
     },

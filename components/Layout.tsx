@@ -1,4 +1,4 @@
-import { Toolbar, Typography } from "@mui/material";
+import { Button, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +8,9 @@ import styles from "../styles/Home.module.css";
 const Header = ({ theme }) => {
   return (
     <Toolbar style={{ height: "1em" }}>
-      <div>
+      <Box
+        sx={{ display: "flex", width: "100%", justifyContent: "space-between", flexWrap: "wrap" }}
+      >
         <Link href="/people" passHref>
           <Box
             style={{
@@ -23,7 +25,11 @@ const Header = ({ theme }) => {
             }}
           ></Box>
         </Link>
-      </div>
+        {/* // TODO: make responsive */}
+        <Button sx={{ margin: "0.5em 0", float: "right" }} variant="outlined" href={`people/new`}>
+          Add Person
+        </Button>
+      </Box>
     </Toolbar>
   );
 };
