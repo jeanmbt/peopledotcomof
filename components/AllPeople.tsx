@@ -18,12 +18,9 @@ export const TableAllPeople = (props: TablePerson) => {
 
   const [cursor, setCursor] = React.useState(0);
 
-  const [getPeople, { loading, refetch, error, data, fetchMore, networkStatus }] = useLazyQuery(
-    GET_PEOPLE,
-    {
-      variables: { skip: cursor, take: 10 },
-    }
-  );
+  const [getPeople, { loading, error, data, fetchMore }] = useLazyQuery(GET_PEOPLE, {
+    variables: { skip: cursor, take: 10 },
+  });
 
   useEffect((): any => {
     if (!data) {

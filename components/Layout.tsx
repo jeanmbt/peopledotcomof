@@ -49,7 +49,9 @@ export default function Layout({ children, theme }) {
   return (
     <>
       <Header theme={theme} />
-      <main style={{ height: "max-content", backgroundColor: deepPurple[100] }}>{children}</main>
+      <main style={{ height: "max-content", minHeight: "80vh", backgroundColor: deepPurple[100] }}>
+        {children}
+      </main>
       <footer
         className={styles.footer}
         style={{
