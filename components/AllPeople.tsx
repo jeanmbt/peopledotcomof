@@ -1,23 +1,13 @@
 import { gql, useQuery, useLazyQuery, NetworkStatus, ApolloQueryResult } from "@apollo/client";
-import {
-  TableBody,
-  Button,
-  TableCell,
-  TableRow,
-  TableFooter,
-  TablePagination,
-  Tooltip,
-  Container,
-  Box,
-} from "@mui/material";
+import { TableBody, Button, TableCell, TableRow, Tooltip, Box, Typography } from "@mui/material";
 import Link from "next/link";
-import React, { EffectCallback, Fragment, useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { GET_PEOPLE } from "../graphql/getPeople";
 import { StyledIndexTableCell } from "../styles/Table/Table.styles";
 import { TablePerson } from "../types/tablePerson";
 import { Error } from "./Error";
 import { Loading } from "./Loading";
-import { TablePaginationActions } from "./TablePaginationActions";
+
 import { InView } from "react-intersection-observer";
 import spinner from "../public/spinner.svg";
 
@@ -94,8 +84,14 @@ export const TableAllPeople = (props: TablePerson) => {
             </TableRow>
           )
         )}
+
         <TableRow>
           {/* // TODO: Make a component */}
+          <TableCell>
+            <Typography variant="subtitle2">
+              Showing {data.people.length} from {count} People
+            </Typography>
+          </TableCell>
           <TableCell>
             <InView
               onChange={(inView) => {
@@ -129,11 +125,6 @@ export const TableAllPeople = (props: TablePerson) => {
                 sx={{
                   margin: "1em",
                   height: "1em",
-                  width: "1em",
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundImage: `url(${spinner.src})`,
-                  backgroundPosition: "center",
                 }}
               >
                 That is as many we get!

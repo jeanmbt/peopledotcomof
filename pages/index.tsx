@@ -7,8 +7,7 @@ import { Fragment } from "react";
 import { addApolloState, initializeApollo } from "../lib/apollo";
 import { gql } from "@apollo/client";
 
-const Home: NextPage = ({ count }: any) => {
-  console.log(count);
+const Home: NextPage = () => {
   return (
     <Container sx={{ paddingY: 2 }}>
       <Box
@@ -36,7 +35,7 @@ const Home: NextPage = ({ count }: any) => {
           variant="contained"
           href="/people"
         >
-          See all {count} People
+          See all People
         </Button>
       </Box>
     </Container>
@@ -44,28 +43,3 @@ const Home: NextPage = ({ count }: any) => {
 };
 
 export default Home;
-
-export const getStaticProps = async (context) => {
-  const apolloClient = initializeApollo();
-
-  const PEOPLE_COUNT = gql`
-    query _count {
-      aggregatePerson {
-        _count {
-          _all
-        }
-      }
-    }
-  `;
-
-  const data = await apolloClient.query({
-    query: PEOPLE_COUNT,
-    notifyOnNetworkStatusChange: true,
-  });
-
-  const count = data.data.aggregatePerson._count._all;
-
-  return addApolloState(apolloClient, {
-    props: { count },
-  });
-};
