@@ -9,16 +9,12 @@ let apolloClient
 
 function createApolloClient() {
  return new ApolloClient({
-  uri: 'http://localhost:3000/api',
+  uri: '/api',
   cache: new InMemoryCache({
     typePolicies: {
       
       Query: {
-        // merge(existing: any = [], incoming :any = []) {
-        //   return [...existing, ...incoming];
-        // },
-        
-        fields: {
+          fields: {
           people: {
             keyArgs: false,
             merge(existing = [], incoming ) {
@@ -32,7 +28,7 @@ function createApolloClient() {
 
   ssrMode: typeof window === 'undefined',
   link: new HttpLink({
-    uri: 'http://localhost:3000/api', // Server URL (must be absolute)
+    uri: '/api', // Server URL (must be absolute)
     credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
   }),
   
@@ -84,3 +80,4 @@ export function useApollo(pageProps) {
   return store
 }
 // export default apolloClient
+

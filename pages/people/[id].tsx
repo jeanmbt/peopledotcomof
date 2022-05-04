@@ -22,7 +22,7 @@ import { Loading } from "../../components/Loading";
 import { NextPage } from "next";
 import React from "react";
 import { StyledCoachTableCell, TableHeaderCell } from "../../styles/Table/Table.styles";
-import { IPerson } from "../../types/person";
+import { Person } from "../../types/person";
 import { Error } from "../../components/Error";
 import { GET_PERSON } from "../../graphql/getPerson";
 
@@ -35,7 +35,7 @@ const Person: NextPage = () => {
 
   let variables: object = null;
   //TODO: use generated Type
-  let person: IPerson = null;
+  let person: Person = null;
 
   id ? (
     (variables = {
