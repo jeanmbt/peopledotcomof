@@ -16,11 +16,13 @@ export const TableAllPeople = (props: TablePerson) => {
 
   const { handleSpecialtyClick, count }: any = props;
 
+
   const [cursor, setCursor] = React.useState(0);
 
   const [getPeople, { loading, error, data, fetchMore }] = useLazyQuery(GET_PEOPLE, {
     variables: { skip: cursor, take: 10 },
   });
+
 
   useEffect((): any => {
     if (!data) {
