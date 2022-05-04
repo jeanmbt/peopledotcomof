@@ -14,11 +14,7 @@ function createApolloClient() {
     typePolicies: {
       
       Query: {
-        // merge(existing: any = [], incoming :any = []) {
-        //   return [...existing, ...incoming];
-        // },
-        
-        fields: {
+          fields: {
           people: {
             keyArgs: false,
             merge(existing = [], incoming ) {
