@@ -109,7 +109,11 @@ const Person: NextPage = () => {
             width: [400, 500, 500],
           }}
         >
-          <Button sx={{ margin: "0.5em 0" }} variant="outlined" onClick={() => router.back()}>
+          <Button
+            sx={{ margin: "0.5em 0", backgroundColor: "white" }}
+            variant="outlined"
+            onClick={() => router.back()}
+          >
             back
           </Button>
 
