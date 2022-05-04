@@ -1,4 +1,4 @@
-import { gql, useQuery, useLazyQuery, NetworkStatus, ApolloQueryResult } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { TableBody, Button, TableCell, TableRow, Tooltip, Box, Typography } from "@mui/material";
 import Link from "next/link";
 import React, { Fragment, useEffect } from "react";
