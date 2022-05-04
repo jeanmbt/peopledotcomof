@@ -1,8 +1,6 @@
 # PeopleDotCom
 
-## Technologies
-
-It was developed with the following technologies:
+This application was developed with the following technologies:
 
 - NextJS
 - TypeScript
