@@ -18,7 +18,9 @@ interface MyAppProps extends AppProps {
 const clientSideEmotionCache = createEmotionCache();
 
 function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) {
+
   const apolloClient = useApollo(pageProps);
+
 
   return (
     <StyledEngineProvider injectFirst>
