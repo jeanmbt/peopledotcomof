@@ -9,6 +9,7 @@ import theme from "../styles/theme/lightThemeOptions";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import createEmotionCache from "../utils/createEmotionCache";
 import Head from "next/head";
+import { useApollo } from "../lib/apollo";
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
@@ -17,16 +18,13 @@ interface MyAppProps extends AppProps {
 const clientSideEmotionCache = createEmotionCache();
 
 function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) {
-  const client = new ApolloClient({
-    uri: "http://localhost:3000/api",
-    cache: new InMemoryCache(),
-  });
+  const apolloClient = useApollo(pageProps);
 
   return (
     <StyledEngineProvider injectFirst>
       <CacheProvider value={emotionCache}>
         <ThemeProvider theme={theme}>
-          <ApolloProvider client={client}>
+          <ApolloProvider client={apolloClient}>
             <Head>
               <title>PeopleDotCom</title>
             </Head>
