@@ -1,30 +1,36 @@
-import { useQuery } from "@apollo/client";
-import {
-  TableBody,
-  Button,
-  TableCell,
-  TableRow,
-  TableFooter,
-  TablePagination,
-  Tooltip,
-} from "@mui/material";
+import { gql, useQuery, useLazyQuery, NetworkStatus, ApolloQueryResult } from "@apollo/client";
+import { TableBody, Button, TableCell, TableRow, Tooltip, Box, Typography } from "@mui/material";
 import Link from "next/link";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { GET_PEOPLE } from "../graphql/getPeople";
 import { StyledIndexTableCell } from "../styles/Table/Table.styles";
 import { TablePerson } from "../types/tablePerson";
 import { Error } from "./Error";
 import { Loading } from "./Loading";
-import { TablePaginationActions } from "./TablePaginationActions";
+
+import { InView } from "react-intersection-observer";
+import spinner from "../public/spinner.svg";
 
 export const TableAllPeople = (props: TablePerson) => {
-  let people = undefined;
-  const { loading, error, data } = useQuery(GET_PEOPLE);
+  let people: any[] | Promise<ApolloQueryResult<any>> | any;
 
-  const { handleSpecialtyClick, rowsPerPage, page, handleChangePage, handleChangeRowsPerPage } =
-    props;
+  const { handleSpecialtyClick, count }: any = props;
 
-  if (loading) {
+
+  const [cursor, setCursor] = React.useState(0);
+
+  const [getPeople, { loading, error, data, fetchMore }] = useLazyQuery(GET_PEOPLE, {
+    variables: { skip: cursor, take: 10 },
+  });
+
+
+  useEffect((): any => {
+    if (!data) {
+      getPeople();
+    }
+  });
+
+  if (data?.loading || loading) {
     return <Loading />;
   }
 
@@ -36,68 +42,96 @@ export const TableAllPeople = (props: TablePerson) => {
     return <Error error={error} />;
   }
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - people.length) : 0;
-
   return (
     <Fragment>
       <TableBody>
-        {(rowsPerPage > 0
-          ? people.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          : people
-        ).map((person) => (
-          <TableRow key={person.id + "row"} sx={{ height: "3em" }}>
-            <StyledIndexTableCell component="th" scope="row" sx={{ paddingX: [1, 1, 2] }}>
-              <Link href={`people/${person.id}`} passHref>
-                {person.name}
-              </Link>
-            </StyledIndexTableCell>
-            <StyledIndexTableCell>
-              {person.specialties.map((specialty) => (
-                <Tooltip
-                  key={specialty.id + person.id + "tooltip"}
-                  title={`Show all people that specialize in ${specialty.name}`}
-                >
-                  <Button
-                    onClick={(e) => {
-                      handleSpecialtyClick(specialty.name);
-                    }}
-                    sx={{ margin: "0 0.5em" }}
-                    key={specialty.id + person.id + +Math.floor(Math.random() * 999999)}
+        {people.map(
+          (person: {
+            id: string;
+            name: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal;
+            specialties: any[];
+          }) => (
+            <TableRow key={person.id + "row"} sx={{ height: "3em" }}>
+              <StyledIndexTableCell component="th" scope="row" sx={{ paddingX: [1, 1, 2] }}>
+                <Link href={`people/${person.id}`} passHref>
+                  {person.name}
+                </Link>
+              </StyledIndexTableCell>
+              <StyledIndexTableCell>
+                {person.specialties.map((specialty: { id: any; name: {} }) => (
+                  <Tooltip
+                    key={specialty.id + person.id + "tooltip"}
+                    title={`Show all people that specialize in ${specialty.name}`}
                   >
-                    {specialty.name}
-                  </Button>
-                </Tooltip>
-              ))}
-            </StyledIndexTableCell>
-            <StyledIndexTableCell>
-              <Button size="small" variant="contained" href={`people/${person.id}`}>
-                more
-              </Button>
-            </StyledIndexTableCell>
-          </TableRow>
-        ))}
-        {emptyRows > 0 && <TableRow style={{ height: "-10" }}></TableRow>}
-      </TableBody>
-      <TableFooter>
+                    <Button
+                      onClick={(e) => {
+                        handleSpecialtyClick(specialty.name);
+                      }}
+                      sx={{ margin: "0 0.5em" }}
+                      key={specialty.id + person.id + +Math.floor(Math.random() * 999999)}
+                    >
+                      {specialty.name}
+                    </Button>
+                  </Tooltip>
+                ))}
+              </StyledIndexTableCell>
+              <StyledIndexTableCell>
+                <Button size="small" variant="contained" href={`people/${person.id}`}>
+                  more
+                </Button>
+              </StyledIndexTableCell>
+            </TableRow>
+          )
+        )}
+
         <TableRow>
-          <TablePagination
-            rowsPerPageOptions={[15, 50, 100, { label: "All", value: -1 }]}
-            colSpan={3}
-            count={people.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            SelectProps={{
-              inputProps: {
-                "aria-label": "per page",
-              },
-              native: true,
-            }}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            ActionsComponent={TablePaginationActions}
-          />
+          {/* // TODO: Make a component */}
+          <TableCell>
+            <Typography variant="subtitle2">
+              Showing {data.people.length} from {count} People
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <InView
+              onChange={(inView) => {
+                setCursor(data.people.slice(-1)[0].id);
+                if (inView && data.people.slice(-1)[0].id !== count) {
+                  fetchMore({
+                    variables: {
+                      skip: cursor,
+                      take: 15,
+                    },
+                  });
+                }
+              }}
+            />
+          </TableCell>
+          <TableCell>
+            {data.people.slice(-1)[0].id !== count ? (
+              <Box
+                sx={{
+                  margin: "1em",
+                  height: "1em",
+                  width: "1em",
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  backgroundImage: `url(${spinner.src})`,
+                  backgroundPosition: "center",
+                }}
+              ></Box>
+            ) : (
+              <Box
+                sx={{
+                  margin: "1em",
+                  height: "1em",
+                }}
+              >
+                That is as many we get!
+              </Box>
+            )}
+          </TableCell>
         </TableRow>
-      </TableFooter>
+      </TableBody>
     </Fragment>
   );
 };

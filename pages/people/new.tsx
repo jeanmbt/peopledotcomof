@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Box, Container, Button, TextField, Typography, Alert } from "@mui/material";
+import { Box, Container, Button, TextField, Typography, Alert, Paper } from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { ADD_PERSON } from "../../graphql/addPerson";
 import React from "react";
@@ -59,18 +59,17 @@ const NewPerson: NextPage = () => {
         width: "100vw",
         display: "flex",
         justifyContent: "center",
-        marginBottom: "6em",
+        paddingY: "3em",
       }}
     >
-      <Box sx={{ alignSelf: "flex-start", justifySelf: "flex-start" }}>
+      <Box component={Paper} sx={{ alignSelf: "flex-start", justifySelf: "flex-start" }}>
         <Button
-          sx={{ margin: "0.5em 0", alignSelf: "flex-start" }}
+          sx={{ margin: "0.5em ", alignSelf: "flex-start" }}
           variant="outlined"
           onClick={() => router.back()}
         >
           back
         </Button>
-
         <Box
           sx={{
             width: [300, 450, 500],
@@ -170,13 +169,15 @@ const NewPerson: NextPage = () => {
               label="Website"
               variant="outlined"
             />
-            <Button
-              type="submit"
-              variant="outlined"
-              sx={{ margin: "1em", width: "50%", alignSelf: "center" }}
-            >
-              Submit
-            </Button>
+            <Box component={Paper} sx={{ display: "flex", justifyContent: "center" }}>
+              <Button
+                type="submit"
+                variant="outlined"
+                sx={{ margin: "1em", width: "50%", alignSelf: "center" }}
+              >
+                Submit
+              </Button>
+            </Box>
           </form>
           {!error && confirmed && <Alert severity="success">Person {name} added</Alert>}
           {error && (

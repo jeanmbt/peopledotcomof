@@ -11,7 +11,7 @@ export const Loading = () => {
         width: "100%",
         right: "0",
         top: "4em",
-        backgroundColor: "rgba(255, 255, 255, 1)",
+        backgroundColor: "#fffffff0",
       }}
     >
       <Container
