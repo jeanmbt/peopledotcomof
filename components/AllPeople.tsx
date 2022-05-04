@@ -12,8 +12,6 @@ import { InView } from "react-intersection-observer";
 import spinner from "../public/spinner.svg";
 
 export const TableAllPeople = (props: TablePerson) => {
-  let people: any[] | Promise<ApolloQueryResult<any>> | any;
-
   const { handleSpecialtyClick, count }: any = props;
 
   const [cursor, setCursor] = React.useState(0);
@@ -21,6 +19,8 @@ export const TableAllPeople = (props: TablePerson) => {
   const [getPeople, { loading, error, data, fetchMore }] = useLazyQuery(GET_PEOPLE, {
     variables: { skip: cursor, take: 10 },
   });
+
+  const people = data?.people;
 
   useEffect((): any => {
     if (!data) {
@@ -31,10 +31,6 @@ export const TableAllPeople = (props: TablePerson) => {
 
   if (data?.loading || loading) {
     return <Loading />;
-  }
-
-  if (data) {
-    people = data.people;
   }
 
   if (error || !data) {

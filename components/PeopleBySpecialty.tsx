@@ -39,7 +39,7 @@ export const TablePeopleBySpecialty = (props: TablePerson) => {
   }
 
   return (
-    <Fragment>
+    <>
       <TableBody>
         {people.map((person) => (
           <TableRow key={person.id + "row"} sx={{ height: "3em" }}>
@@ -78,6 +78,6 @@ export const TablePeopleBySpecialty = (props: TablePerson) => {
           </TableRow>
         ))}
       </TableBody>
-    </Fragment>
+    </>
   );
 };
