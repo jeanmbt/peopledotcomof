@@ -14,23 +14,14 @@ import { TableHeaderCell } from "../../styles/Table/Table.styles";
 import React from "react";
 import { TablePeopleBySpecialty } from "../../components/PeopleBySpecialty";
 import { TableAllPeople } from "../../components/AllPeople";
-import { gql, useQuery } from "@apollo/client";
-import { initializeApollo, addApolloState } from "../../lib/apollo";
+import { useQuery } from "@apollo/client";
+
+import { PEOPLE_COUNT } from "../../graphql/getPeopleCount";
 
 const People: NextPage = () => {
-  let count = "...";
+  let count = "?";
 
-  const PEOPLE_COUNT = gql`
-    query _count {
-      aggregatePerson {
-        _count {
-          _all
-        }
-      }
-    }
-  `;
-
-  const { loading, error, data } = useQuery(PEOPLE_COUNT);
+  const { data } = useQuery(PEOPLE_COUNT);
 
   if (data) {
     count = data.aggregatePerson._count._all;
@@ -98,28 +89,3 @@ const People: NextPage = () => {
 };
 
 export default People;
-
-// export const getStaticProps = async (context) => {
-//   const apolloClient = initializeApollo();
-
-//   const PEOPLE_COUNT = gql`
-//     query _count {
-//       aggregatePerson {
-//         _count {
-//           _all
-//         }
-//       }
-//     }
-//   `;
-
-//   const data = await apolloClient.query({
-//     query: PEOPLE_COUNT,
-//     notifyOnNetworkStatusChange: true,
-//   });
-
-//   const count = data.data.aggregatePerson._count._all;
-
-//   return addApolloState(apolloClient, {
-//     props: { count },
-//   });
-// };
