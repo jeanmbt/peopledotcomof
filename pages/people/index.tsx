@@ -14,10 +14,18 @@ import { TableHeaderCell } from "../../styles/Table/Table.styles";
 import React from "react";
 import { TablePeopleBySpecialty } from "../../components/PeopleBySpecialty";
 import { TableAllPeople } from "../../components/AllPeople";
-import { gql } from "@apollo/client";
-import { initializeApollo, addApolloState } from "../../lib/apollo";
+import { useQuery } from "@apollo/client";
+import { PEOPLE_COUNT } from "../../graphql/getPeopleCount";
 
-const People: NextPage = ({ count }: any) => {
+const People: NextPage = () => {
+  let count = "?";
+
+  const { data } = useQuery(PEOPLE_COUNT);
+
+  if (data) {
+    count = data.aggregatePerson._count._all;
+  }
+
   const [sortBy, setSortBy] = React.useState("");
 
   const handleSpecialtyClick = (specialtyName: string | any) => {
@@ -80,28 +88,3 @@ const People: NextPage = ({ count }: any) => {
 };
 
 export default People;
-
-export const getStaticProps = async (context) => {
-  const apolloClient = initializeApollo();
-
-  const PEOPLE_COUNT = gql`
-    query _count {
-      aggregatePerson {
-        _count {
-          _all
-        }
-      }
-    }
-  `;
-
-  const data = await apolloClient.query({
-    query: PEOPLE_COUNT,
-    notifyOnNetworkStatusChange: true,
-  });
-
-  const count = data.data.aggregatePerson._count._all;
-
-  return addApolloState(apolloClient, {
-    props: { count },
-  });
-};
