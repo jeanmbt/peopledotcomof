@@ -3,7 +3,7 @@ import { ApolloServer } from 'apollo-server-micro'
 import { resolvers } from '../../prisma/generated/type-graphql'
 import * as tq from "type-graphql";
 import Cors from 'micro-cors'
-import { context } from "./graphql/context";
+import { context } from "./context";
 
 const cors = Cors()
 
