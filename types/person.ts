@@ -1,4 +1,4 @@
-export interface Person {
+export interface IPerson {
   id: number | undefined;
   name: string | undefined;
   phone: string | undefined;

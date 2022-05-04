@@ -22,7 +22,7 @@ import { Loading } from "../../components/Loading";
 import { NextPage } from "next";
 import React from "react";
 import { StyledCoachTableCell, TableHeaderCell } from "../../styles/Table/Table.styles";
-import { Person } from "../../types/person";
+
 import { Error } from "../../components/Error";
 import { GET_PERSON } from "../../graphql/getPerson";
 
@@ -34,8 +34,6 @@ const Person: NextPage = () => {
   const id = parseInt(useRouter().query.id as string);
 
   let variables: object = null;
-  //TODO: use generated Type
-  let person: Person = null;
 
   id ? (
     (variables = {
@@ -88,11 +86,9 @@ const Person: NextPage = () => {
 
   const { data, loading, error } = useQuery(GET_PERSON, { variables });
 
-  if (loading) return <Loading />;
+  const person = data?.findFirstPerson;
 
-  if (data) {
-    person = data.findFirstPerson;
-  }
+  if (loading) return <Loading />;
 
   if (person)
     return (
@@ -109,7 +105,11 @@ const Person: NextPage = () => {
             width: [400, 500, 500],
           }}
         >
-          <Button sx={{ margin: "0.5em 0" }} variant="outlined" onClick={() => router.back()}>
+          <Button
+            sx={{ margin: "0.5em 0", backgroundColor: "white" }}
+            variant="outlined"
+            onClick={() => router.back()}
+          >
             back
           </Button>
 
