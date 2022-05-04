@@ -6,6 +6,9 @@ import { transformFields, getPrismaFromContext, transformCountFieldIntoSelectRel
 
 @TypeGraphQL.Resolver(_of => Specialty)
 export class SpecialtyRelationsResolver {
+  map(arg0: (specialty: { id: number; name: {}; }) => JSX.Element): import("react").ReactNode {
+    throw new Error("Method not implemented.");
+  }
   @TypeGraphQL.FieldResolver(_type => [Person], {
     nullable: false
   })

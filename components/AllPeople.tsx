@@ -10,9 +10,10 @@ import { Loading } from "./Loading";
 
 import { InView } from "react-intersection-observer";
 import spinner from "../public/spinner.svg";
+import { SpecialtyRelationsResolver } from "../prisma/generated/type-graphql";
 
 export const TableAllPeople = (props: TablePerson) => {
-  const { handleSpecialtyClick, count }: any = props;
+  const { handleSpecialtyClick, count } = props;
 
   const [cursor, setCursor] = React.useState(0);
 
@@ -22,7 +23,7 @@ export const TableAllPeople = (props: TablePerson) => {
 
   const people = data?.people;
 
-  useEffect((): any => {
+  useEffect(() => {
     if (!data) {
       getPeople();
     }
@@ -44,7 +45,7 @@ export const TableAllPeople = (props: TablePerson) => {
           (person: {
             id: string;
             name: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal;
-            specialties: any[];
+            specialties: SpecialtyRelationsResolver;
           }) => (
             <TableRow key={person.id + "row"} sx={{ height: "3em" }}>
               <StyledIndexTableCell component="th" scope="row" sx={{ paddingX: [1, 1, 2] }}>
@@ -53,14 +54,14 @@ export const TableAllPeople = (props: TablePerson) => {
                 </Link>
               </StyledIndexTableCell>
               <StyledIndexTableCell>
-                {person.specialties.map((specialty: { id: any; name: {} }) => (
+                {person.specialties.map((specialty: { id: number; name: {} }) => (
                   <Tooltip
                     key={specialty.id + person.id + "tooltip"}
                     title={`Show all people that specialize in ${specialty.name}`}
                   >
                     <Button
                       onClick={(e) => {
-                        handleSpecialtyClick(specialty.name);
+                        handleSpecialtyClick(`${specialty.name}`);
                       }}
                       sx={{ margin: "0 0.5em" }}
                       key={specialty.id + person.id + +Math.floor(Math.random() * 999999)}

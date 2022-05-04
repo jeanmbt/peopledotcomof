@@ -28,7 +28,7 @@ const People: NextPage = () => {
 
   const [sortBy, setSortBy] = React.useState("");
 
-  const handleSpecialtyClick = (specialtyName: string | any) => {
+  const handleSpecialtyClick = (specialtyName: string) => {
     if (sortBy === "" || sortBy !== specialtyName) {
       setSortBy(specialtyName);
     } else if (sortBy === specialtyName) {
@@ -67,6 +67,7 @@ const People: NextPage = () => {
               </TableHead>
               {sortBy ? (
                 <TablePeopleBySpecialty
+                  count={count}
                   sortBy={sortBy}
                   setSortBy={setSortBy}
                   handleSpecialtyClick={handleSpecialtyClick}
