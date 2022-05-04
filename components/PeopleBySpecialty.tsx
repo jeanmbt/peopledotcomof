@@ -21,7 +21,7 @@ export const TablePeopleBySpecialty = (props: TablePerson) => {
     variables,
   });
 
-  useEffect((): any => {
+  useEffect(() => {
     if (!data) {
       getPeople();
     }
