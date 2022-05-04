@@ -9,9 +9,3 @@ export interface Context {
 export const context: Context = {
   prisma: prisma,
 };
-
-// export async function createContext({ req, res }): Promise<Context> {
-//   return {
-//     prisma,
-//   }
-// }
