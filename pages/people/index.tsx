@@ -15,7 +15,6 @@ import React from "react";
 import { TablePeopleBySpecialty } from "../../components/PeopleBySpecialty";
 import { TableAllPeople } from "../../components/AllPeople";
 import { useQuery } from "@apollo/client";
-
 import { PEOPLE_COUNT } from "../../graphql/getPeopleCount";
 
 const People: NextPage = () => {

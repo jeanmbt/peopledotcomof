@@ -4,6 +4,7 @@ import { PeopleQueryResult } from "../graphql/generated/graphql-generated-types"
 
 export interface TablePerson {
   setPage?: any;
+  countData? :any;
   count?: any;
   loading?: any;
   error?: ApolloError;
